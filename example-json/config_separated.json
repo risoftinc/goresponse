@@ -1,0 +1,45 @@
+{
+  "default_language": "en",
+  "languages": ["en", "id"],
+  "translations": {
+    "en": {
+      "existing": "Existing translation"
+    }
+  },
+  "translation_source": {
+    "en": {
+      "method": "file",
+      "path": "en.json"
+    },
+    "id": {
+      "method": "file",
+      "path": "id.json"
+    }
+  },
+  "message_templates": {
+    "welcome": {
+      "key": "welcome",
+      "template": "Welcome $name to $place",
+      "code_mappings": {
+        "http": 200,
+        "grpc": 0
+      }
+    },
+    "user_created": {
+      "key": "user_created",
+      "template": "User $username created successfully with ID $id",
+      "code_mappings": {
+        "http": 201,
+        "grpc": 0
+      }
+    },
+    "validation_error": {
+      "key": "validation_error",
+      "template": "Validation failed: $message",
+      "code_mappings": {
+        "http": 400,
+        "grpc": 3
+      }
+    }
+  }
+}

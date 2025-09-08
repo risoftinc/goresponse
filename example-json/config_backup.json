@@ -1,0 +1,36 @@
+{
+  "default_language": "en",
+  "languages": ["en", "id"],
+  "translations": {
+    "en": {
+      "backup_created": "Backup created successfully",
+      "backup_restored": "Backup restored successfully",
+      "backup_failed": "Backup failed",
+      "restore_success": "Restore completed successfully",
+      "restore_failed": "Restore failed"
+    },
+    "id": {
+      "backup_created": "Backup berhasil dibuat",
+      "backup_restored": "Backup berhasil dipulihkan",
+      "backup_failed": "Backup gagal",
+      "restore_success": "Restore berhasil diselesaikan",
+      "restore_failed": "Restore gagal"
+    }
+  },
+  "message_templates": {
+    "backup_created": {
+      "key": "backup_created",
+      "template": "Backup created successfully for $filename",
+      "code_mappings": {
+        "http": 200
+      }
+    },
+    "backup_failed": {
+      "key": "backup_failed",
+      "template": "Backup failed: $reason",
+      "code_mappings": {
+        "http": 500
+      }
+    }
+  }
+}
