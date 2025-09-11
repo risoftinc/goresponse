@@ -96,13 +96,13 @@ goresponse/
 ### Install
 
 ```bash
-go get github.com/risoftinc/goresponse
+go get go.risoftinc.com/goresponse
 ```
 
 ### Import
 
 ```go
-import "github.com/risoftinc/goresponse"
+import "go.risoftinc.com/goresponse"
 ```
 
 ## Quick Start
@@ -143,7 +143,7 @@ package main
 
 import (
     "fmt"
-    "github.com/risoftinc/goresponse"
+    "go.risoftinc.com/goresponse"
 )
 
 func main() {
@@ -325,7 +325,7 @@ package main
 import (
     "fmt"
     "log"
-    "your-project/utils/goresponse"
+    "go.risoftinc.com/goresponse"
 )
 
 func main() {
@@ -1056,7 +1056,7 @@ package main
 import (
     "net/http"
     "github.com/labstack/echo/v4"
-    "your-project/utils/goresponse"
+    "go.risoftinc.com/goresponse"
 )
 
 // EchoMiddleware creates middleware for automatic context setup
