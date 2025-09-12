@@ -259,7 +259,7 @@ Contains structs and functions for **async loading** (auto refresh):
 
 ### `response.go`
 Contains ResponseBuilder and ResponseManager for standardized API responses:
-- `responseBuilder` - Fluent interface for building responses with method chaining
+- `ResponseBuilder` - Fluent interface for building responses with method chaining
 - `Response` - Final standardized response structure
 - Context integration for language and protocol detection
 - Parameter substitution in message templates
@@ -562,17 +562,17 @@ config, err := goresponse.LoadConfig(source)
 
 ### ResponseBuilder Methods
 
-- `NewResponseBuilder(messageKey string) *responseBuilder` - Create new response builder
-- `WithContext(ctx context.Context) *responseBuilder` - Set context and extract language/protocol
-- `SetLanguage(language string) *responseBuilder` - Set language manually
-- `SetProtocol(protocol string) *responseBuilder` - Set protocol manually
-- `SetError(err error) *responseBuilder` - Set error and mark as error response
-- `SetParam(key string, value any) *responseBuilder` - Add single parameter
-- `SetParams(params map[string]any) *responseBuilder` - Add multiple parameters
-- `SetData(key string, value any) *responseBuilder` - Add single data field
-- `SetDatas(data map[string]any) *responseBuilder` - Add multiple data fields
-- `SetMeta(key string, value any) *responseBuilder` - Add single metadata field
-- `SetMetas(meta map[string]any) *responseBuilder` - Add multiple metadata fields
+- `NewResponseBuilder(messageKey string) *ResponseBuilder` - Create new response builder
+- `WithContext(ctx context.Context) *ResponseBuilder` - Set context and extract language/protocol
+- `SetLanguage(language string) *ResponseBuilder` - Set language manually
+- `SetProtocol(protocol string) *ResponseBuilder` - Set protocol manually
+- `SetError(err error) *ResponseBuilder` - Set error and mark as error response
+- `SetParam(key string, value any) *ResponseBuilder` - Add single parameter
+- `SetParams(params map[string]any) *ResponseBuilder` - Add multiple parameters
+- `SetData(key string, value any) *ResponseBuilder` - Add single data field
+- `SetDatas(data map[string]any) *ResponseBuilder` - Add multiple data fields
+- `SetMeta(key string, value any) *ResponseBuilder` - Add single metadata field
+- `SetMetas(meta map[string]any) *ResponseBuilder` - Add multiple metadata fields
 - `Error() string` - Get JSON representation of builder
 - `ToError() error` - Convert builder to error type
 
@@ -580,11 +580,11 @@ config, err := goresponse.LoadConfig(source)
 
 - `WithProtocol(ctx context.Context, protocol string) context.Context` - Add protocol to context
 - `WithLanguage(ctx context.Context, language string) context.Context` - Add language to context
-- `ParseResponseBuilderError(err error) (*responseBuilder, bool)` - Extract builder from error
+- `ParseResponseBuilderError(err error) (*ResponseBuilder, bool)` - Extract builder from error
 
 ### ResponseConfig Methods (Response Building)
 
-- `BuildResponse(rb *responseBuilder) (*Response, error)` - Build final response from builder
+- `BuildResponse(rb *ResponseBuilder) (*Response, error)` - Build final response from builder
 
 ### AsyncConfigManager Methods
 

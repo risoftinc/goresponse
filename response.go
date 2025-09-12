@@ -12,9 +12,9 @@ import (
 // ResponseContextKey represents the type for context keys used in response building
 type ResponseContextKey string
 
-// responseBuilder provides a fluent interface for building standardized API responses
+// ResponseBuilder provides a fluent interface for building standardized API responses
 // It supports method chaining and parameter substitution in message templates
-type responseBuilder struct {
+type ResponseBuilder struct {
 	MessageKey   string          // Key to identify the message template
 	Params       map[string]any  // Parameters for template substitution
 	Data         map[string]any  // Response data payload
@@ -45,10 +45,10 @@ const (
 	ProtocolKey ResponseContextKey = "goresponse-protocol"
 )
 
-// NewResponseBuilder creates a new responseBuilder instance with the given message key
+// NewResponseBuilder creates a new ResponseBuilder instance with the given message key
 // The message key is used to identify the appropriate message template from configuration
-func NewResponseBuilder(messageKey string) *responseBuilder {
-	return &responseBuilder{
+func NewResponseBuilder(messageKey string) *ResponseBuilder {
+	return &ResponseBuilder{
 		MessageKey: messageKey,
 	}
 }
@@ -67,7 +67,7 @@ func WithLanguage(ctx context.Context, language string) context.Context {
 
 // WithContext sets the context and extracts language and protocol information if available
 // This method allows the response builder to inherit language and protocol settings from the request context
-func (rb *responseBuilder) WithContext(ctx context.Context) *responseBuilder {
+func (rb *ResponseBuilder) WithContext(ctx context.Context) *ResponseBuilder {
 	rb.Context = ctx
 
 	if ctx != nil {
@@ -87,21 +87,21 @@ func (rb *responseBuilder) WithContext(ctx context.Context) *responseBuilder {
 
 // SetLanguage manually sets the language for message translation
 // This overrides any language setting from context
-func (rb *responseBuilder) SetLanguage(language string) *responseBuilder {
+func (rb *ResponseBuilder) SetLanguage(language string) *ResponseBuilder {
 	rb.Language = language
 	return rb
 }
 
 // SetProtocol manually sets the protocol type for response code mapping
 // This overrides any protocol setting from context
-func (rb *responseBuilder) SetProtocol(protocol string) *responseBuilder {
+func (rb *ResponseBuilder) SetProtocol(protocol string) *ResponseBuilder {
 	rb.Protocol = protocol
 	return rb
 }
 
 // SetError sets an error for this response builder and marks it as an error response
 // This will cause the final response to be treated as an error
-func (rb *responseBuilder) SetError(err error) *responseBuilder {
+func (rb *ResponseBuilder) SetError(err error) *ResponseBuilder {
 	rb.ErrorData = err
 	rb.IsBuiltError = true
 	return rb
@@ -109,7 +109,7 @@ func (rb *responseBuilder) SetError(err error) *responseBuilder {
 
 // SetParam adds a single parameter for template substitution
 // Parameters are used to replace placeholders like $name in message templates
-func (rb *responseBuilder) SetParam(key string, value any) *responseBuilder {
+func (rb *ResponseBuilder) SetParam(key string, value any) *ResponseBuilder {
 	if rb.Params == nil {
 		rb.Params = make(map[string]any)
 	}
@@ -119,7 +119,7 @@ func (rb *responseBuilder) SetParam(key string, value any) *responseBuilder {
 
 // SetParams adds multiple parameters for template substitution
 // Existing parameters with the same key will be replaced
-func (rb *responseBuilder) SetParams(params map[string]any) *responseBuilder {
+func (rb *ResponseBuilder) SetParams(params map[string]any) *ResponseBuilder {
 	if rb.Params == nil {
 		rb.Params = make(map[string]any)
 	}
@@ -132,7 +132,7 @@ func (rb *responseBuilder) SetParams(params map[string]any) *responseBuilder {
 
 // SetData adds a single data field to the response payload
 // Data fields are included in the final response as the data payload
-func (rb *responseBuilder) SetData(key string, value any) *responseBuilder {
+func (rb *ResponseBuilder) SetData(key string, value any) *ResponseBuilder {
 	if rb.Data == nil {
 		rb.Data = make(map[string]any)
 	}
@@ -142,7 +142,7 @@ func (rb *responseBuilder) SetData(key string, value any) *responseBuilder {
 
 // SetDatas adds multiple data fields to the response payload
 // Existing data fields with the same key will be replaced
-func (rb *responseBuilder) SetDatas(data map[string]any) *responseBuilder {
+func (rb *ResponseBuilder) SetDatas(data map[string]any) *ResponseBuilder {
 	if rb.Data == nil {
 		rb.Data = make(map[string]any)
 	}
@@ -155,7 +155,7 @@ func (rb *responseBuilder) SetDatas(data map[string]any) *responseBuilder {
 
 // SetMeta adds a single metadata field to the response
 // Metadata fields are included in the final response as additional information
-func (rb *responseBuilder) SetMeta(key string, value any) *responseBuilder {
+func (rb *ResponseBuilder) SetMeta(key string, value any) *ResponseBuilder {
 	if rb.Meta == nil {
 		rb.Meta = make(map[string]any)
 	}
@@ -165,7 +165,7 @@ func (rb *responseBuilder) SetMeta(key string, value any) *responseBuilder {
 
 // SetMetas adds multiple metadata fields to the response
 // Existing metadata fields with the same key will be replaced
-func (rb *responseBuilder) SetMetas(meta map[string]any) *responseBuilder {
+func (rb *ResponseBuilder) SetMetas(meta map[string]any) *ResponseBuilder {
 	if rb.Meta == nil {
 		rb.Meta = make(map[string]any)
 	}
@@ -178,35 +178,35 @@ func (rb *responseBuilder) SetMetas(meta map[string]any) *responseBuilder {
 
 // Error implements the error interface by returning a JSON representation of the response builder
 // This allows the response builder to be used as an error type
-func (rb *responseBuilder) Error() string {
+func (rb *ResponseBuilder) Error() string {
 	b, _ := json.Marshal(rb)
 	return string(b)
 }
 
 // ToError converts the response builder to an error type
 // This allows the response builder to be returned as an error from functions
-func (rb *responseBuilder) ToError() error {
+func (rb *ResponseBuilder) ToError() error {
 	return rb
 }
 
-// ParseResponseBuilderError attempts to extract a responseBuilder from an error
+// ParseResponseBuilderError attempts to extract a ResponseBuilder from an error
 // This is useful for recovering response builder information from error chains
-func ParseResponseBuilderError(err error) (*responseBuilder, bool) {
+func ParseResponseBuilderError(err error) (*ResponseBuilder, bool) {
 	if err == nil {
 		return nil, false
 	}
 
-	var rb *responseBuilder
+	var rb *ResponseBuilder
 	if errors.As(err, &rb) {
 		return rb, true
 	}
 	return nil, false
 }
 
-// BuildResponse constructs the final Response from a responseBuilder using the configuration
+// BuildResponse constructs the final Response from a ResponseBuilder using the configuration
 // This method handles message template resolution, parameter substitution, and code mapping
 // Note: This method may experience data inconsistency if called during async configuration reload
-func (c *ResponseConfig) BuildResponse(rb *responseBuilder) (*Response, error) {
+func (c *ResponseConfig) BuildResponse(rb *ResponseBuilder) (*Response, error) {
 	if rb == nil {
 		return nil, errors.New("response builder is nil")
 	}

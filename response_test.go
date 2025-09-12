@@ -1092,7 +1092,7 @@ func TestResponseBuilderMethodChaining(t *testing.T) {
 // TestResponseBuilderEdgeCases tests edge cases
 func TestResponseBuilderEdgeCases(t *testing.T) {
 	t.Run("SetParam with nil Params", func(t *testing.T) {
-		builder := &responseBuilder{MessageKey: "test"}
+		builder := &ResponseBuilder{MessageKey: "test"}
 		builder.SetParam("key", "value")
 		if builder.Params == nil {
 			t.Error("Expected Params to be initialized")
@@ -1103,7 +1103,7 @@ func TestResponseBuilderEdgeCases(t *testing.T) {
 	})
 
 	t.Run("SetData with nil Data", func(t *testing.T) {
-		builder := &responseBuilder{MessageKey: "test"}
+		builder := &ResponseBuilder{MessageKey: "test"}
 		builder.SetData("key", "value")
 		if builder.Data == nil {
 			t.Error("Expected Data to be initialized")
@@ -1114,7 +1114,7 @@ func TestResponseBuilderEdgeCases(t *testing.T) {
 	})
 
 	t.Run("SetMeta with nil Meta", func(t *testing.T) {
-		builder := &responseBuilder{MessageKey: "test"}
+		builder := &ResponseBuilder{MessageKey: "test"}
 		builder.SetMeta("key", "value")
 		if builder.Meta == nil {
 			t.Error("Expected Meta to be initialized")
@@ -1126,12 +1126,12 @@ func TestResponseBuilderEdgeCases(t *testing.T) {
 
 	t.Run("WithContext with nil context", func(t *testing.T) {
 		builder := NewResponseBuilder("test")
-		builder.WithContext(nil)
+		builder.WithContext(context.TODO())
 		// Should not panic
 	})
 
 	t.Run("Error with empty builder", func(t *testing.T) {
-		builder := &responseBuilder{MessageKey: "test"}
+		builder := &ResponseBuilder{MessageKey: "test"}
 		errorStr := builder.Error()
 		if errorStr == "" {
 			t.Error("Expected non-empty error string")

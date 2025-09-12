@@ -16,14 +16,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Features
 - 
 
-## [1.0.0] - 2025-09-12
+## [1.0.1] - 2025-09-12
 
-### Features
-- Initial release
-- Support for file and URL configuration loading
-- Sync and async configuration management
-- ResponseBuilder for standardized API responses
-- Multi-language support with translation sources
-- Comprehensive test coverage (115KB, 4442 lines of tests)
-- Thread-safe operations
-- Method chaining support
+### Changed
+- Renamed `responseBuilder` struct to `ResponseBuilder` for proper Go naming conventions
+- Updated all method signatures and return types to use `ResponseBuilder`
+- Updated documentation to reflect the new naming convention
+- Fixed linting warning in test file by using `context.TODO()` instead of `nil`
+
+### Breaking Changes
+- `responseBuilder` struct is now exported as `ResponseBuilder`
+- All method signatures now return `*ResponseBuilder` instead of `*responseBuilder`
+- `BuildResponse()` method now accepts `*ResponseBuilder` instead of `*responseBuilder`
+- `ParseResponseBuilderError()` now returns `(*ResponseBuilder, bool)` instead of `(*responseBuilder, bool)`
