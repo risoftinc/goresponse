@@ -213,6 +213,10 @@ func (c *ResponseConfig) BuildResponse(rb *ResponseBuilder) (*Response, error) {
 
 	r := &Response{}
 
+	if rb.Language == "" {
+		r.Language = c.GetDefaultLanguage()
+	}
+
 	// Get the message template for the specified message key
 	template, exists := c.GetMessageTemplate(rb.MessageKey)
 	if !exists {
@@ -222,13 +226,13 @@ func (c *ResponseConfig) BuildResponse(rb *ResponseBuilder) (*Response, error) {
 	// Determine the message text based on language preference
 	// Fallback to template default if translation is not available
 	if template.Translations[rb.Language] == "" {
-		r.Message = template.Template
+		if translation, exists := c.GetTranslation(rb.Language, rb.MessageKey); exists {
+			r.Message = translation
+		} else {
+			r.Message = template.Template
+		}
 	} else {
 		r.Message = template.Translations[rb.Language]
-	}
-
-	if rb.Language == "" {
-		r.Language = c.GetDefaultLanguage()
 	}
 
 	// Substitute parameters in the message template
