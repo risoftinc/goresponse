@@ -732,7 +732,7 @@ func TestConfigPrinter(t *testing.T) {
 		}
 
 		// Verify it's valid JSON
-		var exportedConfig map[string]interface{}
+		var exportedConfig map[string]any
 		err = json.Unmarshal([]byte(jsonStr), &exportedConfig)
 		if err != nil {
 			t.Errorf("Exported JSON is invalid: %v", err)
@@ -770,7 +770,7 @@ func TestConfigPrinter(t *testing.T) {
 			t.Errorf("Failed to read exported file: %v", err)
 		}
 
-		var exportedConfig map[string]interface{}
+		var exportedConfig map[string]any
 		err = json.Unmarshal(data, &exportedConfig)
 		if err != nil {
 			t.Errorf("Exported file contains invalid JSON: %v", err)
@@ -795,14 +795,14 @@ func TestConfigPrinter(t *testing.T) {
 			t.Errorf("toJSON failed: %v", err)
 		}
 
-		var exportedConfig map[string]interface{}
+		var exportedConfig map[string]any
 		err = json.Unmarshal(jsonData, &exportedConfig)
 		if err != nil {
 			t.Errorf("toJSON result is invalid JSON: %v", err)
 		}
 
 		// Check that message_templates contains both async and manual templates
-		messageTemplates, ok := exportedConfig["message_templates"].(map[string]interface{})
+		messageTemplates, ok := exportedConfig["message_templates"].(map[string]any)
 		if !ok {
 			t.Error("Expected message_templates to be a map")
 		}
@@ -849,7 +849,7 @@ func TestConfigPrinterWithEmptyConfig(t *testing.T) {
 	}
 
 	// Should be valid JSON even with empty config
-	var exportedConfig map[string]interface{}
+	var exportedConfig map[string]any
 	err = json.Unmarshal([]byte(jsonStr), &exportedConfig)
 	if err != nil {
 		t.Errorf("Exported JSON is invalid: %v", err)

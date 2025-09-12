@@ -604,7 +604,7 @@ func TestResponseBuilderError(t *testing.T) {
 	}
 
 	// Verify it's valid JSON
-	var errorData map[string]interface{}
+	var errorData map[string]any
 	err := json.Unmarshal([]byte(errorStr), &errorData)
 	if err != nil {
 		t.Errorf("Error string is not valid JSON: %v", err)

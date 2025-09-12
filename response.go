@@ -29,13 +29,13 @@ type ResponseBuilder struct {
 // Response represents the final standardized response structure
 // It contains all necessary information for API responses across different protocols
 type Response struct {
-	Code     int         `json:"code"`           // Response code (HTTP status, gRPC code, etc.)
-	Message  string      `json:"message"`        // Human-readable message
-	Data     interface{} `json:"data,omitempty"` // Response payload data
-	Meta     interface{} `json:"meta,omitempty"` // Additional metadata
-	Error    error       `json:"-"`              // Error details if applicable (not serialized)
-	Language string      `json:"-"`              // Language used (not serialized)
-	Protocol string      `json:"-"`              // Protocol used (not serialized)
+	Code     int            `json:"code"`           // Response code (HTTP status, gRPC code, etc.)
+	Message  string         `json:"message"`        // Human-readable message
+	Data     map[string]any `json:"data,omitempty"` // Response payload data
+	Meta     map[string]any `json:"meta,omitempty"` // Additional metadata
+	Error    error          `json:"-"`              // Error details if applicable (not serialized)
+	Language string         `json:"-"`              // Language used (not serialized)
+	Protocol string         `json:"-"`              // Protocol used (not serialized)
 }
 
 const (

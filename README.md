@@ -885,8 +885,8 @@ The generated response follows this structure:
 type Response struct {
     Code     int         `json:"code"`              // Automatic response code
     Message  string      `json:"message"`           // Translated message
-    Data     interface{} `json:"data,omitempty"`    // Response payload
-    Meta     interface{} `json:"meta,omitempty"`    // Additional metadata
+    Data     map[string]any `json:"data,omitempty"`    // Response payload
+    Meta     map[string]any `json:"meta,omitempty"`    // Additional metadata
     Error    error       `json:"error,omitempty"`   // Error details (if error)
     Language string      `json:"-"`                 // Language used
     Protocol string      `json:"-"`                 // Protocol used
@@ -1332,7 +1332,7 @@ func CustomErrorHandler(config *goresponse.ResponseConfig) echo.HTTPErrorHandler
         
         // Handle Echo errors
         if he, ok := err.(*echo.HTTPError); ok {
-            c.JSON(he.Code, map[string]interface{}{
+            c.JSON(he.Code, map[string]any{
                 "code":    he.Code,
                 "message": he.Message,
             })

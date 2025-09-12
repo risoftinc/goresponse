@@ -137,7 +137,7 @@ func exampleDataPayload(config *ResponseConfig) {
 	fmt.Println("-------------------------")
 
 	// Sample user data
-	users := []map[string]interface{}{
+	users := []map[string]any{
 		{"id": 1, "name": "Alice", "email": "alice@example.com"},
 		{"id": 2, "name": "Bob", "email": "bob@example.com"},
 		{"id": 3, "name": "Charlie", "email": "charlie@example.com"},
@@ -147,7 +147,7 @@ func exampleDataPayload(config *ResponseConfig) {
 	builder := NewResponseBuilder("users_retrieved")
 	builder.SetParam("count", len(users))
 	builder.SetData("users", users)
-	builder.SetData("pagination", map[string]interface{}{
+	builder.SetData("pagination", map[string]any{
 		"page":     1,
 		"per_page": 10,
 		"total":    len(users),

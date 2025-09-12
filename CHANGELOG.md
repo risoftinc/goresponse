@@ -16,16 +16,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Features
 - 
 
-## [1.0.1] - 2025-09-12
+## [1.0.2] - 2025-09-12
 
 ### Changed
-- Renamed `responseBuilder` struct to `ResponseBuilder` for proper Go naming conventions
-- Updated all method signatures and return types to use `ResponseBuilder`
-- Updated documentation to reflect the new naming convention
-- Fixed linting warning in test file by using `context.TODO()` instead of `nil`
+- **BREAKING**: Changed `Response.Data` field from `interface{}` to `map[string]any` for better type safety
+- **BREAKING**: Changed `Response.Meta` field from `interface{}` to `map[string]any` for better type safety
+- Updated all `map[string]interface{}` references to `map[string]any` throughout the codebase
+- Updated documentation in README.md to reflect the new type definitions
+- Updated all test files to use `map[string]any` instead of `map[string]interface{}`
+- Updated example files to use the new type definitions
 
 ### Breaking Changes
-- `responseBuilder` struct is now exported as `ResponseBuilder`
-- All method signatures now return `*ResponseBuilder` instead of `*responseBuilder`
-- `BuildResponse()` method now accepts `*ResponseBuilder` instead of `*responseBuilder`
-- `ParseResponseBuilderError()` now returns `(*ResponseBuilder, bool)` instead of `(*responseBuilder, bool)`
+- `Response.Data` field type changed from `interface{}` to `map[string]any`
+- `Response.Meta` field type changed from `interface{}` to `map[string]any`
+- All `map[string]interface{}` references changed to `map[string]any`
+- This may require updates in client code that directly accesses these fields
