@@ -16,9 +16,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Features
 - 
 
-## [1.0.3] - 2025-09-12
+## [1.0.4] - 2025-09-12
 
 ### Fixed
-- Fixed message template fallback logic in BuildResponse method
-- Fixed language handling when language is not specified
-- Improved translation resolution with proper fallback chain
+- **AsyncConfigManager**: Manual message templates are now preserved during config refresh
+- Previously, manually added message templates were lost when AsyncConfigManager refreshed configuration
+- Manual templates now persist across automatic config reloads

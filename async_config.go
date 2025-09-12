@@ -97,6 +97,7 @@ func (acm *AsyncConfigManager) refreshConfig() {
 
 	acm.mu.Lock()
 	oldConfig := acm.config
+	newConfig.ManualMessageTemplates = oldConfig.ManualMessageTemplates
 	acm.config = newConfig
 	acm.lastError = nil
 	callbacks := acm.callbacks
