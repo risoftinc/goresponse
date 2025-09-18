@@ -148,6 +148,200 @@ func TestWithLanguage(t *testing.T) {
 	}
 }
 
+// TestGetLanguageFromContext tests GetLanguageFromContext function
+func TestGetLanguageFromContext(t *testing.T) {
+	tests := []struct {
+		name          string
+		ctx           context.Context
+		expectedLang  string
+		expectedFound bool
+	}{
+		{
+			name:          "Context with language",
+			ctx:           WithLanguage(context.Background(), "en"),
+			expectedLang:  "en",
+			expectedFound: true,
+		},
+		{
+			name:          "Context with different language",
+			ctx:           WithLanguage(context.Background(), "id"),
+			expectedLang:  "id",
+			expectedFound: true,
+		},
+		{
+			name:          "Context with empty language",
+			ctx:           WithLanguage(context.Background(), ""),
+			expectedLang:  "",
+			expectedFound: true,
+		},
+		{
+			name:          "Nil context",
+			ctx:           nil,
+			expectedLang:  "",
+			expectedFound: false,
+		},
+		{
+			name:          "Context without language",
+			ctx:           context.Background(),
+			expectedLang:  "",
+			expectedFound: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			lang, found := GetLanguageFromContext(tt.ctx)
+			if lang != tt.expectedLang {
+				t.Errorf("Expected language %s, got %s", tt.expectedLang, lang)
+			}
+			if found != tt.expectedFound {
+				t.Errorf("Expected found %v, got %v", tt.expectedFound, found)
+			}
+		})
+	}
+}
+
+// TestGetProtocolFromContext tests GetProtocolFromContext function
+func TestGetProtocolFromContext(t *testing.T) {
+	tests := []struct {
+		name          string
+		ctx           context.Context
+		expectedProto string
+		expectedFound bool
+	}{
+		{
+			name:          "Context with protocol",
+			ctx:           WithProtocol(context.Background(), "http"),
+			expectedProto: "http",
+			expectedFound: true,
+		},
+		{
+			name:          "Context with different protocol",
+			ctx:           WithProtocol(context.Background(), "grpc"),
+			expectedProto: "grpc",
+			expectedFound: true,
+		},
+		{
+			name:          "Context with empty protocol",
+			ctx:           WithProtocol(context.Background(), ""),
+			expectedProto: "",
+			expectedFound: true,
+		},
+		{
+			name:          "Nil context",
+			ctx:           nil,
+			expectedProto: "",
+			expectedFound: false,
+		},
+		{
+			name:          "Context without protocol",
+			ctx:           context.Background(),
+			expectedProto: "",
+			expectedFound: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			protocol, found := GetProtocolFromContext(tt.ctx)
+			if protocol != tt.expectedProto {
+				t.Errorf("Expected protocol %s, got %s", tt.expectedProto, protocol)
+			}
+			if found != tt.expectedFound {
+				t.Errorf("Expected found %v, got %v", tt.expectedFound, found)
+			}
+		})
+	}
+}
+
+// TestGetLanguage tests GetLanguage function
+func TestGetLanguage(t *testing.T) {
+	tests := []struct {
+		name         string
+		ctx          context.Context
+		expectedLang string
+	}{
+		{
+			name:         "Context with language",
+			ctx:          WithLanguage(context.Background(), "en"),
+			expectedLang: "en",
+		},
+		{
+			name:         "Context with different language",
+			ctx:          WithLanguage(context.Background(), "id"),
+			expectedLang: "id",
+		},
+		{
+			name:         "Context with empty language",
+			ctx:          WithLanguage(context.Background(), ""),
+			expectedLang: "",
+		},
+		{
+			name:         "Nil context",
+			ctx:          nil,
+			expectedLang: "",
+		},
+		{
+			name:         "Context without language",
+			ctx:          context.Background(),
+			expectedLang: "",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			lang := GetLanguage(tt.ctx)
+			if lang != tt.expectedLang {
+				t.Errorf("Expected language %s, got %s", tt.expectedLang, lang)
+			}
+		})
+	}
+}
+
+// TestGetProtocol tests GetProtocol function
+func TestGetProtocol(t *testing.T) {
+	tests := []struct {
+		name          string
+		ctx           context.Context
+		expectedProto string
+	}{
+		{
+			name:          "Context with protocol",
+			ctx:           WithProtocol(context.Background(), "http"),
+			expectedProto: "http",
+		},
+		{
+			name:          "Context with different protocol",
+			ctx:           WithProtocol(context.Background(), "grpc"),
+			expectedProto: "grpc",
+		},
+		{
+			name:          "Context with empty protocol",
+			ctx:           WithProtocol(context.Background(), ""),
+			expectedProto: "",
+		},
+		{
+			name:          "Nil context",
+			ctx:           nil,
+			expectedProto: "",
+		},
+		{
+			name:          "Context without protocol",
+			ctx:           context.Background(),
+			expectedProto: "",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			protocol := GetProtocol(tt.ctx)
+			if protocol != tt.expectedProto {
+				t.Errorf("Expected protocol %s, got %s", tt.expectedProto, protocol)
+			}
+		})
+	}
+}
+
 // TestResponseBuilderWithContext tests WithContext method
 func TestResponseBuilderWithContext(t *testing.T) {
 	t.Run("Context with language and protocol", func(t *testing.T) {

@@ -65,6 +65,50 @@ func WithLanguage(ctx context.Context, language string) context.Context {
 	return context.WithValue(ctx, LanguageKey, language)
 }
 
+// GetLanguageFromContext extracts language information from the context
+// Returns the language string and a boolean indicating if the language was found
+func GetLanguageFromContext(ctx context.Context) (string, bool) {
+	if ctx == nil {
+		return "", false
+	}
+	lang, ok := ctx.Value(LanguageKey).(string)
+	return lang, ok
+}
+
+// GetProtocolFromContext extracts protocol information from the context
+// Returns the protocol string and a boolean indicating if the protocol was found
+func GetProtocolFromContext(ctx context.Context) (string, bool) {
+	if ctx == nil {
+		return "", false
+	}
+	protocol, ok := ctx.Value(ProtocolKey).(string)
+	return protocol, ok
+}
+
+// GetLanguage extracts language information from the context
+// Returns the language string, or empty string if not found or context is nil
+func GetLanguage(ctx context.Context) string {
+	if ctx == nil {
+		return ""
+	}
+	if lang, ok := ctx.Value(LanguageKey).(string); ok {
+		return lang
+	}
+	return ""
+}
+
+// GetProtocol extracts protocol information from the context
+// Returns the protocol string, or empty string if not found or context is nil
+func GetProtocol(ctx context.Context) string {
+	if ctx == nil {
+		return ""
+	}
+	if protocol, ok := ctx.Value(ProtocolKey).(string); ok {
+		return protocol
+	}
+	return ""
+}
+
 // WithContext sets the context and extracts language and protocol information if available
 // This method allows the response builder to inherit language and protocol settings from the request context
 func (rb *ResponseBuilder) WithContext(ctx context.Context) *ResponseBuilder {

@@ -1,4 +1,4 @@
-package goresponse
+package example
 
 import (
 	"context"
@@ -6,17 +6,19 @@ import (
 	"fmt"
 	"log"
 	"time"
+
+	"go.risoftinc.com/goresponse"
 )
 
 // ExampleResponseUsage demonstrates various usage patterns of ResponseBuilder and ResponseManager
 func ExampleResponseUsage() {
 	// Load configuration first
-	source := ConfigSource{
+	source := goresponse.ConfigSource{
 		Method: "file",
 		Path:   "config.json",
 	}
 
-	config, err := LoadConfig(source)
+	config, err := goresponse.LoadConfig(source)
 	if err != nil {
 		log.Printf("Error loading config: %v", err)
 		return
@@ -59,12 +61,12 @@ func ExampleResponseUsage() {
 }
 
 // Example 1: Basic Success Response
-func exampleBasicSuccess(config *ResponseConfig) {
+func exampleBasicSuccess(config *goresponse.ResponseConfig) {
 	fmt.Println("1. Basic Success Response:")
 	fmt.Println("------------------------")
 
 	// Create response builder
-	builder := NewResponseBuilder("user_created")
+	builder := goresponse.NewResponseBuilder("user_created")
 	builder.SetParam("name", "John Doe")
 	builder.SetParam("email", "john@example.com")
 
@@ -81,12 +83,12 @@ func exampleBasicSuccess(config *ResponseConfig) {
 }
 
 // Example 2: Error Response with Parameters
-func exampleErrorResponse(config *ResponseConfig) {
+func exampleErrorResponse(config *goresponse.ResponseConfig) {
 	fmt.Println("2. Error Response with Parameters:")
 	fmt.Println("----------------------------------")
 
 	// Create error response
-	builder := NewResponseBuilder("validation_failed")
+	builder := goresponse.NewResponseBuilder("validation_failed")
 	builder.SetParam("field", "email")
 	builder.SetParam("value", "invalid-email")
 	builder.SetParam("rule", "must be valid email format")
@@ -105,17 +107,17 @@ func exampleErrorResponse(config *ResponseConfig) {
 }
 
 // Example 3: Context Integration
-func exampleContextIntegration(config *ResponseConfig) {
+func exampleContextIntegration(config *goresponse.ResponseConfig) {
 	fmt.Println("3. Context Integration:")
 	fmt.Println("----------------------")
 
 	// Create context with language and protocol
 	ctx := context.Background()
-	ctx = WithLanguage(ctx, "id")
-	ctx = WithProtocol(ctx, "http")
+	ctx = goresponse.WithLanguage(ctx, "id")
+	ctx = goresponse.WithProtocol(ctx, "http")
 
 	// Create response builder with context
-	builder := NewResponseBuilder("welcome_message")
+	builder := goresponse.NewResponseBuilder("welcome_message")
 	builder.SetParam("name", "Ahmad")
 	builder.WithContext(ctx)
 
@@ -132,7 +134,7 @@ func exampleContextIntegration(config *ResponseConfig) {
 }
 
 // Example 4: Data Payload Response
-func exampleDataPayload(config *ResponseConfig) {
+func exampleDataPayload(config *goresponse.ResponseConfig) {
 	fmt.Println("4. Data Payload Response:")
 	fmt.Println("-------------------------")
 
@@ -144,7 +146,7 @@ func exampleDataPayload(config *ResponseConfig) {
 	}
 
 	// Create response with data
-	builder := NewResponseBuilder("users_retrieved")
+	builder := goresponse.NewResponseBuilder("users_retrieved")
 	builder.SetParam("count", len(users))
 	builder.SetData("users", users)
 	builder.SetData("pagination", map[string]any{
@@ -166,12 +168,12 @@ func exampleDataPayload(config *ResponseConfig) {
 }
 
 // Example 4.5: Metadata Response
-func exampleMetadataResponse(config *ResponseConfig) {
+func exampleMetadataResponse(config *goresponse.ResponseConfig) {
 	fmt.Println("4.5. Metadata Response:")
 	fmt.Println("----------------------")
 
 	// Response with metadata
-	builder := NewResponseBuilder("users_retrieved")
+	builder := goresponse.NewResponseBuilder("users_retrieved")
 	builder.SetParam("count", 3)
 	builder.SetData("users", []map[string]any{
 		{"id": 1, "name": "Alice", "email": "alice@example.com"},
@@ -200,7 +202,7 @@ func exampleMetadataResponse(config *ResponseConfig) {
 
 	// Example with multiple metadata at once
 	fmt.Println("Multiple Metadata at Once:")
-	builder2 := NewResponseBuilder("data_processed")
+	builder2 := goresponse.NewResponseBuilder("data_processed")
 	builder2.SetParam("operation", "bulk_update")
 	builder2.SetData("updated_count", 25)
 	builder2.SetMetas(map[string]any{
@@ -222,7 +224,7 @@ func exampleMetadataResponse(config *ResponseConfig) {
 }
 
 // Example 5: Service Layer Integration
-func exampleServiceLayer(config *ResponseConfig) {
+func exampleServiceLayer(config *goresponse.ResponseConfig) {
 	fmt.Println("5. Service Layer Integration:")
 	fmt.Println("-----------------------------")
 
@@ -246,7 +248,7 @@ func exampleServiceLayer(config *ResponseConfig) {
 		err := userService.CreateUser(context.Background(), tc.name, tc.email, tc.age)
 		if err != nil {
 			// Check if it's a ResponseBuilder error
-			if builder, ok := ParseResponseBuilderError(err); ok {
+			if builder, ok := goresponse.ParseResponseBuilderError(err); ok {
 				response, _ := config.BuildResponse(builder)
 				printResponse(response)
 			} else {
@@ -260,7 +262,7 @@ func exampleServiceLayer(config *ResponseConfig) {
 }
 
 // Example 6: Handler Layer Integration
-func exampleHandlerLayer(config *ResponseConfig) {
+func exampleHandlerLayer(config *goresponse.ResponseConfig) {
 	fmt.Println("6. Handler Layer Integration:")
 	fmt.Println("-----------------------------")
 
@@ -307,7 +309,7 @@ func exampleHandlerLayer(config *ResponseConfig) {
 }
 
 // Example 7: Multiple Language Support
-func exampleMultipleLanguages(config *ResponseConfig) {
+func exampleMultipleLanguages(config *goresponse.ResponseConfig) {
 	fmt.Println("7. Multiple Language Support:")
 	fmt.Println("-----------------------------")
 
@@ -317,7 +319,7 @@ func exampleMultipleLanguages(config *ResponseConfig) {
 	for _, lang := range languages {
 		fmt.Printf("Language: %s\n", lang)
 
-		builder := NewResponseBuilder(messageKey)
+		builder := goresponse.NewResponseBuilder(messageKey)
 		builder.SetLanguage(lang)
 		builder.SetProtocol("http")
 		builder.SetParam("name", "User")
@@ -335,7 +337,7 @@ func exampleMultipleLanguages(config *ResponseConfig) {
 }
 
 // Example 8: Protocol-Specific Responses
-func exampleProtocolSpecific(config *ResponseConfig) {
+func exampleProtocolSpecific(config *goresponse.ResponseConfig) {
 	fmt.Println("8. Protocol-Specific Responses:")
 	fmt.Println("-------------------------------")
 
@@ -345,7 +347,7 @@ func exampleProtocolSpecific(config *ResponseConfig) {
 	for _, protocol := range protocols {
 		fmt.Printf("Protocol: %s\n", protocol)
 
-		builder := NewResponseBuilder(messageKey)
+		builder := goresponse.NewResponseBuilder(messageKey)
 		builder.SetProtocol(protocol)
 		builder.SetParam("field", "email")
 		builder.SetParam("value", "invalid")
@@ -363,12 +365,12 @@ func exampleProtocolSpecific(config *ResponseConfig) {
 }
 
 // Example 9: Error Recovery and Parsing
-func exampleErrorRecovery(config *ResponseConfig) {
+func exampleErrorRecovery(config *goresponse.ResponseConfig) {
 	fmt.Println("9. Error Recovery and Parsing:")
 	fmt.Println("-------------------------------")
 
 	// Create an error from ResponseBuilder
-	builder := NewResponseBuilder("user_not_found")
+	builder := goresponse.NewResponseBuilder("user_not_found")
 	builder.SetParam("id", "123")
 	builder.SetError(fmt.Errorf("user with id 123 not found"))
 
@@ -377,7 +379,7 @@ func exampleErrorRecovery(config *ResponseConfig) {
 	fmt.Printf("Original error: %v\n", err)
 
 	// Parse the error back to ResponseBuilder
-	parsedBuilder, ok := ParseResponseBuilderError(err)
+	parsedBuilder, ok := goresponse.ParseResponseBuilderError(err)
 	if ok {
 		fmt.Println("Successfully parsed ResponseBuilder error")
 
@@ -395,7 +397,7 @@ func exampleErrorRecovery(config *ResponseConfig) {
 }
 
 // Example 10: Complex Business Logic
-func exampleComplexBusinessLogic(config *ResponseConfig) {
+func exampleComplexBusinessLogic(config *goresponse.ResponseConfig) {
 	fmt.Println("10. Complex Business Logic:")
 	fmt.Println("---------------------------")
 
@@ -418,7 +420,7 @@ func exampleComplexBusinessLogic(config *ResponseConfig) {
 }
 
 // Helper function to print response
-func printResponse(response *Response) {
+func printResponse(response *goresponse.Response) {
 	jsonData, err := json.MarshalIndent(response, "", "  ")
 	if err != nil {
 		log.Printf("Error marshaling response: %v", err)
@@ -430,13 +432,13 @@ func printResponse(response *Response) {
 // Mock structures for examples
 
 type UserService struct {
-	config *ResponseConfig
+	config *goresponse.ResponseConfig
 }
 
 func (s *UserService) CreateUser(ctx context.Context, name, email string, age int) error {
 	// Validation logic
 	if email == "" || !isValidEmail(email) {
-		builder := NewResponseBuilder("validation_failed")
+		builder := goresponse.NewResponseBuilder("validation_failed")
 		builder.SetParam("field", "email")
 		builder.SetParam("value", email)
 		builder.SetParam("rule", "must be valid email format")
@@ -444,7 +446,7 @@ func (s *UserService) CreateUser(ctx context.Context, name, email string, age in
 	}
 
 	if age < 18 {
-		builder := NewResponseBuilder("validation_failed")
+		builder := goresponse.NewResponseBuilder("validation_failed")
 		builder.SetParam("field", "age")
 		builder.SetParam("value", age)
 		builder.SetParam("rule", "must be at least 18 years old")
@@ -453,7 +455,7 @@ func (s *UserService) CreateUser(ctx context.Context, name, email string, age in
 
 	// Simulate database error
 	if email == "error@example.com" {
-		builder := NewResponseBuilder("internal_error")
+		builder := goresponse.NewResponseBuilder("internal_error")
 		builder.SetParam("service", "user_service")
 		builder.SetError(fmt.Errorf("database connection failed"))
 		return builder.ToError()
@@ -464,7 +466,7 @@ func (s *UserService) CreateUser(ctx context.Context, name, email string, age in
 }
 
 type UserHandler struct {
-	config *ResponseConfig
+	config *goresponse.ResponseConfig
 }
 
 type CreateUserRequest struct {
@@ -473,27 +475,27 @@ type CreateUserRequest struct {
 	Age   int    `json:"age"`
 }
 
-func (h *UserHandler) CreateUser(req *CreateUserRequest) *Response {
+func (h *UserHandler) CreateUser(req *CreateUserRequest) *goresponse.Response {
 	// Simulate service call
 	userService := &UserService{config: h.config}
 	err := userService.CreateUser(context.Background(), req.Name, req.Email, req.Age)
 
 	if err != nil {
 		// Check if it's a ResponseBuilder error
-		if builder, ok := ParseResponseBuilderError(err); ok {
+		if builder, ok := goresponse.ParseResponseBuilderError(err); ok {
 			response, _ := h.config.BuildResponse(builder)
 			return response
 		}
 
 		// Handle other errors
-		builder := NewResponseBuilder("internal_error")
+		builder := goresponse.NewResponseBuilder("internal_error")
 		builder.SetError(err)
 		response, _ := h.config.BuildResponse(builder)
 		return response
 	}
 
 	// Success response
-	builder := NewResponseBuilder("user_created")
+	builder := goresponse.NewResponseBuilder("user_created")
 	builder.SetParam("name", req.Name)
 	builder.SetParam("email", req.Email)
 	response, _ := h.config.BuildResponse(builder)
@@ -501,7 +503,7 @@ func (h *UserHandler) CreateUser(req *CreateUserRequest) *Response {
 }
 
 type OrderService struct {
-	config *ResponseConfig
+	config *goresponse.ResponseConfig
 }
 
 type Order struct {
@@ -512,10 +514,10 @@ type Order struct {
 	Currency string   `json:"currency"`
 }
 
-func (s *OrderService) ProcessOrder(ctx context.Context, order *Order) *Response {
+func (s *OrderService) ProcessOrder(ctx context.Context, order *Order) *goresponse.Response {
 	// Complex business logic simulation
 	if order.Total <= 0 {
-		builder := NewResponseBuilder("validation_failed")
+		builder := goresponse.NewResponseBuilder("validation_failed")
 		builder.SetParam("field", "total")
 		builder.SetParam("value", order.Total)
 		builder.SetParam("rule", "must be greater than 0")
@@ -524,7 +526,7 @@ func (s *OrderService) ProcessOrder(ctx context.Context, order *Order) *Response
 	}
 
 	if len(order.Items) == 0 {
-		builder := NewResponseBuilder("validation_failed")
+		builder := goresponse.NewResponseBuilder("validation_failed")
 		builder.SetParam("field", "items")
 		builder.SetParam("value", "empty")
 		builder.SetParam("rule", "must have at least one item")
@@ -536,7 +538,7 @@ func (s *OrderService) ProcessOrder(ctx context.Context, order *Order) *Response
 	time.Sleep(100 * time.Millisecond)
 
 	// Success response with order data
-	builder := NewResponseBuilder("order_processed")
+	builder := goresponse.NewResponseBuilder("order_processed")
 	builder.SetParam("order_id", order.ID)
 	builder.SetParam("total", order.Total)
 	builder.SetParam("currency", order.Currency)
@@ -560,15 +562,15 @@ func ExampleAsyncResponseUsage() {
 	fmt.Println("=== Async ResponseBuilder Examples ===")
 
 	// Create async manager
-	source := ConfigSource{
+	source := goresponse.ConfigSource{
 		Method: "file",
 		Path:   "config.json",
 	}
 
-	asyncManager := NewAsyncConfigManager(source, 5*time.Minute)
+	asyncManager := goresponse.NewAsyncConfigManager(source, 5*time.Minute)
 
 	// Add callback for configuration changes
-	asyncManager.AddCallback(func(oldConfig, newConfig *ResponseConfig) {
+	asyncManager.AddCallback(func(oldConfig, newConfig *goresponse.ResponseConfig) {
 		fmt.Printf("Configuration updated! New default language: %s\n", newConfig.GetDefaultLanguage())
 	})
 
@@ -586,7 +588,7 @@ func ExampleAsyncResponseUsage() {
 	fmt.Println("1. Basic Response with Async Config:")
 	fmt.Println("------------------------------------")
 
-	builder := NewResponseBuilder("success")
+	builder := goresponse.NewResponseBuilder("success")
 	builder.SetParam("service", "async_service")
 	builder.SetLanguage("en")
 	builder.SetProtocol("http")
@@ -609,7 +611,7 @@ func ExampleAsyncResponseUsage() {
 	// Simulate concurrent requests
 	for i := 0; i < 5; i++ {
 		go func(id int) {
-			builder := NewResponseBuilder("concurrent_request")
+			builder := goresponse.NewResponseBuilder("concurrent_request")
 			builder.SetParam("request_id", fmt.Sprintf("req-%d", id))
 			builder.SetParam("timestamp", time.Now().Format(time.RFC3339))
 
@@ -634,12 +636,12 @@ func ExampleResponseBuilderChaining() {
 	fmt.Println("=== ResponseBuilder Method Chaining Examples ===")
 
 	// Load configuration
-	source := ConfigSource{
+	source := goresponse.ConfigSource{
 		Method: "file",
 		Path:   "config.json",
 	}
 
-	config, err := LoadConfig(source)
+	config, err := goresponse.LoadConfig(source)
 	if err != nil {
 		log.Printf("Error loading config: %v", err)
 		return
@@ -650,7 +652,7 @@ func ExampleResponseBuilderChaining() {
 	fmt.Println("-------------------------")
 
 	response, err := config.BuildResponse(
-		NewResponseBuilder("user_created").
+		goresponse.NewResponseBuilder("user_created").
 			SetParam("name", "Alice").
 			SetParam("email", "alice@example.com").
 			SetLanguage("en").
@@ -670,7 +672,7 @@ func ExampleResponseBuilderChaining() {
 	fmt.Println("------------------------------")
 
 	response, err = config.BuildResponse(
-		NewResponseBuilder("data_retrieved").
+		goresponse.NewResponseBuilder("data_retrieved").
 			SetParams(map[string]any{
 				"table":  "users",
 				"count":  100,
@@ -703,7 +705,7 @@ func ExampleResponseBuilderChaining() {
 	fmt.Println("---------------------------")
 
 	response, err = config.BuildResponse(
-		NewResponseBuilder("validation_failed").
+		goresponse.NewResponseBuilder("validation_failed").
 			SetParam("field", "password").
 			SetParam("rule", "minimum 8 characters").
 			SetError(fmt.Errorf("password too short")).

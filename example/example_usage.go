@@ -1,10 +1,12 @@
-package goresponse
+package example
 
 import (
 	"encoding/json"
 	"fmt"
 	"log"
 	"time"
+
+	"go.risoftinc.com/goresponse"
 )
 
 // File Structure:
@@ -18,12 +20,12 @@ import (
 func ExampleUsage() {
 	// Example 1: Load configuration from file
 	fmt.Println("=== Example 1: Load Config from File ===")
-	fileSource := ConfigSource{
+	fileSource := goresponse.ConfigSource{
 		Method: "file",
 		Path:   "config.json",
 	}
 
-	config, err := LoadConfig(fileSource)
+	config, err := goresponse.LoadConfig(fileSource)
 	if err != nil {
 		log.Printf("Error loading config from file: %v", err)
 		return
@@ -55,7 +57,7 @@ func ExampleUsage() {
 
 	// Example 2: Load configuration from URL
 	fmt.Println("=== Example 2: Load Config from URL ===")
-	urlSource := ConfigSource{
+	urlSource := goresponse.ConfigSource{
 		Method: "url",
 		Path:   "https://api.example.com/config.json",
 	}
@@ -111,7 +113,7 @@ func ExampleConfigSourceJSON() {
 	jsonStr := `{"method": "file", "path": "config.json"}`
 
 	// Parse JSON to ConfigSource
-	var source ConfigSource
+	var source goresponse.ConfigSource
 	if err := json.Unmarshal([]byte(jsonStr), &source); err != nil {
 		log.Printf("Error parsing JSON: %v", err)
 		return
@@ -120,7 +122,7 @@ func ExampleConfigSourceJSON() {
 	fmt.Printf("ConfigSource: Method=%s, Path=%s\n", source.Method, source.Path)
 
 	// Load config using source
-	config, err := LoadConfig(source)
+	config, err := goresponse.LoadConfig(source)
 	if err != nil {
 		log.Printf("Error loading config: %v", err)
 		return
@@ -134,11 +136,11 @@ func ExampleConfigManagerUsage() {
 	fmt.Println("=== Example ConfigManager ===")
 
 	// Create config manager with file source
-	fileSource := ConfigSource{
+	fileSource := goresponse.ConfigSource{
 		Method: "file",
 		Path:   "config.json",
 	}
-	configManager := NewConfigManager(fileSource)
+	configManager := goresponse.NewConfigManager(fileSource)
 
 	// Load configuration
 	if err := configManager.Load(); err != nil {
@@ -165,7 +167,7 @@ func ExampleMessageTemplateBuilderUsage() {
 	// Example 1: Creating message template with method chaining
 	fmt.Println("1. Creating message template with method chaining:")
 
-	template1 := NewMessageTemplateBuilder("user_created").
+	template1 := goresponse.NewMessageTemplateBuilder("user_created").
 		WithTemplate("User $name has been created successfully").
 		WithTranslation("en", "User $name has been created successfully").
 		WithTranslation("id", "User $name berhasil dibuat").
@@ -176,7 +178,7 @@ func ExampleMessageTemplateBuilderUsage() {
 	fmt.Printf("Template 1: %+v\n", template1)
 
 	// Example 2: Creating template with code mappings only
-	template2 := NewMessageTemplateBuilder("validation_error").
+	template2 := goresponse.NewMessageTemplateBuilder("validation_error").
 		WithTemplate("Validation failed for field: $field").
 		WithCodeMapping("http", 422).
 		WithCodeMapping("grpc", 3).
@@ -198,7 +200,7 @@ func ExampleMessageTemplateBuilderUsage() {
 		"rest": 200,
 	}
 
-	template3 := NewMessageTemplateBuilder("welcome_message").
+	template3 := goresponse.NewMessageTemplateBuilder("welcome_message").
 		WithTemplate("Welcome $name! Your account was created on $date").
 		WithTranslations(translations).
 		WithCodeMappings(codeMappings).
@@ -212,12 +214,12 @@ func ExampleMessageTemplateBuilderUsage() {
 	fmt.Println("2. Using template with ResponseConfig:")
 
 	// Load config
-	source := ConfigSource{
+	source := goresponse.ConfigSource{
 		Method: "file",
 		Path:   "config.json",
 	}
 
-	config, err := LoadConfig(source)
+	config, err := goresponse.LoadConfig(source)
 	if err != nil {
 		log.Printf("Error loading config: %v", err)
 		return
@@ -248,7 +250,7 @@ func ExampleMessageTemplateBuilderUsage() {
 	// Example 5: Using with AsyncConfigManager
 	fmt.Println("3. Using with AsyncConfigManager:")
 
-	asyncManager := NewAsyncConfigManager(source, 30*time.Second)
+	asyncManager := goresponse.NewAsyncConfigManager(source, 30*time.Second)
 
 	if err := asyncManager.Start(); err != nil {
 		log.Printf("Error starting async manager: %v", err)
@@ -270,12 +272,12 @@ func ExampleManualTemplatePriorityUsage() {
 	fmt.Println("=== Example Manual Template Priority ===")
 
 	// Load config with async templates
-	source := ConfigSource{
+	source := goresponse.ConfigSource{
 		Method: "file",
 		Path:   "config.json",
 	}
 
-	config, err := LoadConfig(source)
+	config, err := goresponse.LoadConfig(source)
 	if err != nil {
 		log.Printf("Error loading config: %v", err)
 		return
@@ -287,7 +289,7 @@ func ExampleManualTemplatePriorityUsage() {
 	}
 
 	// Add manual template with same key
-	manualTemplate := NewMessageTemplateBuilder("validation_failed").
+	manualTemplate := goresponse.NewMessageTemplateBuilder("validation_failed").
 		WithTemplate("Custom validation failed for field: $field (MANUAL OVERRIDE)").
 		WithTranslations(map[string]string{
 			"en": "Custom validation failed for field: $field (MANUAL OVERRIDE)",
@@ -315,7 +317,7 @@ func ExampleManualTemplatePriorityUsage() {
 	fmt.Println("\nSimulating async reload...")
 
 	// Load new config (simulate reload)
-	newConfig, err := LoadConfig(source)
+	newConfig, err := goresponse.LoadConfig(source)
 	if err != nil {
 		log.Printf("Error: %v", err)
 		return
@@ -323,7 +325,7 @@ func ExampleManualTemplatePriorityUsage() {
 
 	// Copy manual templates to new config
 	if config.ManualMessageTemplates != nil {
-		newConfig.ManualMessageTemplates = make(map[string]MessageTemplate)
+		newConfig.ManualMessageTemplates = make(map[string]goresponse.MessageTemplate)
 		for key, template := range config.ManualMessageTemplates {
 			newConfig.ManualMessageTemplates[key] = template
 		}
@@ -345,19 +347,19 @@ func ExampleConfigPrinterUsage() {
 	fmt.Println("=== Example ConfigPrinter ===")
 
 	// Load config
-	source := ConfigSource{
+	source := goresponse.ConfigSource{
 		Method: "file",
 		Path:   "config.json",
 	}
 
-	config, err := LoadConfig(source)
+	config, err := goresponse.LoadConfig(source)
 	if err != nil {
 		log.Printf("Error loading config: %v", err)
 		return
 	}
 
 	// Add manual template for demo
-	manualTemplate := NewMessageTemplateBuilder("custom_error").
+	manualTemplate := goresponse.NewMessageTemplateBuilder("custom_error").
 		WithTemplate("Custom error occurred: $details").
 		WithTranslations(map[string]string{
 			"en": "Custom error occurred: $details",
@@ -435,12 +437,12 @@ func ExampleAsyncConfigPrinterUsage() {
 	fmt.Println("=== Example AsyncConfigManager Printer ===")
 
 	// Setup async manager
-	source := ConfigSource{
+	source := goresponse.ConfigSource{
 		Method: "file",
 		Path:   "config.json",
 	}
 
-	asyncManager := NewAsyncConfigManager(source, 30*time.Second)
+	asyncManager := goresponse.NewAsyncConfigManager(source, 30*time.Second)
 
 	if err := asyncManager.Start(); err != nil {
 		log.Printf("Error starting async manager: %v", err)
@@ -449,7 +451,7 @@ func ExampleAsyncConfigPrinterUsage() {
 	defer asyncManager.Stop()
 
 	// Add manual template
-	manualTemplate := NewMessageTemplateBuilder("async_custom").
+	manualTemplate := goresponse.NewMessageTemplateBuilder("async_custom").
 		WithTemplate("Async custom message: $message").
 		WithTranslations(map[string]string{
 			"en": "Async custom message: $message",
@@ -491,22 +493,22 @@ func ExampleAdvancedMessageTemplateUsage() {
 	fmt.Println("=== Example Advanced MessageTemplate Usage ===")
 
 	// Create multiple templates with builder pattern
-	templates := []*MessageTemplate{
-		NewMessageTemplateBuilder("success").
+	templates := []*goresponse.MessageTemplate{
+		goresponse.NewMessageTemplateBuilder("success").
 			WithTemplate("Operation completed successfully").
 			WithTranslation("en", "Operation completed successfully").
 			WithTranslation("id", "Operasi berhasil diselesaikan").
 			WithCodeMapping("http", 200).
 			Build(),
 
-		NewMessageTemplateBuilder("error").
+		goresponse.NewMessageTemplateBuilder("error").
 			WithTemplate("An error occurred: $details").
 			WithTranslation("en", "An error occurred: $details").
 			WithTranslation("id", "Terjadi kesalahan: $details").
 			WithCodeMapping("http", 500).
 			Build(),
 
-		NewMessageTemplateBuilder("not_found").
+		goresponse.NewMessageTemplateBuilder("not_found").
 			WithTemplate("Resource not found: $resource").
 			WithTranslation("en", "Resource not found: $resource").
 			WithTranslation("id", "Resource tidak ditemukan: $resource").
@@ -515,8 +517,8 @@ func ExampleAdvancedMessageTemplateUsage() {
 	}
 
 	// Load config and add templates
-	source := ConfigSource{Method: "file", Path: "config.json"}
-	config, err := LoadConfig(source)
+	source := goresponse.ConfigSource{Method: "file", Path: "config.json"}
+	config, err := goresponse.LoadConfig(source)
 	if err != nil {
 		log.Printf("Error: %v", err)
 		return
@@ -541,7 +543,7 @@ func ExampleAdvancedMessageTemplateUsage() {
 
 	// Test update template
 	fmt.Println("\nUpdate template:")
-	updatedTemplate := NewMessageTemplateBuilder("success").
+	updatedTemplate := goresponse.NewMessageTemplateBuilder("success").
 		WithTemplate("Operation completed successfully!").
 		WithTranslation("en", "Operation completed successfully!").
 		WithTranslation("id", "Operasi berhasil diselesaikan!").
@@ -572,12 +574,12 @@ func ExampleTranslationSourceUsage() {
 
 	// Example 1: Using config with translation_source
 	fmt.Println("1. Load config with translation_source:")
-	fileSource := ConfigSource{
+	fileSource := goresponse.ConfigSource{
 		Method: "file",
 		Path:   "config_separated.json", // File with translation_source
 	}
 
-	config, err := LoadConfig(fileSource)
+	config, err := goresponse.LoadConfig(fileSource)
 	if err != nil {
 		log.Printf("Error loading config: %v", err)
 		return
@@ -609,19 +611,19 @@ func ExampleTranslationSourceUsage() {
 	fmt.Println("2. Comparison inline vs translation_source:")
 
 	// Load config with inline translations
-	inlineSource := ConfigSource{
+	inlineSource := goresponse.ConfigSource{
 		Method: "file",
 		Path:   "config.json", // File with inline translations
 	}
 
-	inlineConfig, err := LoadConfig(inlineSource)
+	inlineConfig, err := goresponse.LoadConfig(inlineSource)
 	if err != nil {
 		log.Printf("Error loading inline config: %v", err)
 		return
 	}
 
 	// Load config with translation_source
-	separatedConfig, err := LoadConfig(fileSource)
+	separatedConfig, err := goresponse.LoadConfig(fileSource)
 	if err != nil {
 		log.Printf("Error loading separated config: %v", err)
 		return
@@ -640,10 +642,10 @@ func ExampleTranslationSourceUsage() {
 	// Example 3: Using async with translation_source
 	fmt.Println("3. Async loading with translation_source:")
 
-	asyncManager := NewAsyncConfigManager(fileSource, 30*time.Second)
+	asyncManager := goresponse.NewAsyncConfigManager(fileSource, 30*time.Second)
 
 	// Callback for monitoring
-	asyncManager.AddCallback(func(oldConfig, newConfig *ResponseConfig) {
+	asyncManager.AddCallback(func(oldConfig, newConfig *goresponse.ResponseConfig) {
 		fmt.Printf("Config updated with translation_source at %s\n", time.Now().Format("15:04:05"))
 		if newConfig != nil {
 			trans, _ := newConfig.GetTranslation("en", "success")
@@ -670,7 +672,7 @@ func ExampleMixedTranslationUsage() {
 	fmt.Println("=== Example Mixed Translation Usage ===")
 
 	// Create config with inline translations
-	config := &ResponseConfig{
+	config := &goresponse.ResponseConfig{
 		DefaultLanguage: "en",
 		Languages:       []string{"en", "id"},
 		Translations: map[string]map[string]string{
@@ -683,7 +685,7 @@ func ExampleMixedTranslationUsage() {
 				"error":   "Error (inline)",
 			},
 		},
-		TranslationSources: map[string]TranslationSource{
+		TranslationSources: map[string]goresponse.TranslationSource{
 			"en": {
 				Method: "file",
 				Path:   "translations/en.json",
@@ -726,15 +728,15 @@ func ExampleAsyncConfigManagerUsage() {
 	fmt.Println("=== Example AsyncConfigManager ===")
 
 	// Create async config manager with refresh every 30 seconds
-	fileSource := ConfigSource{
+	fileSource := goresponse.ConfigSource{
 		Method: "file",
 		Path:   "config.json",
 	}
 
-	asyncManager := NewAsyncConfigManager(fileSource, 30*time.Second)
+	asyncManager := goresponse.NewAsyncConfigManager(fileSource, 30*time.Second)
 
 	// Add callback for configuration changes
-	asyncManager.AddCallback(func(oldConfig, newConfig *ResponseConfig) {
+	asyncManager.AddCallback(func(oldConfig, newConfig *goresponse.ResponseConfig) {
 		fmt.Printf("Config updated! Old default lang: %s, New default lang: %s\n",
 			oldConfig.GetDefaultLanguage(), newConfig.GetDefaultLanguage())
 	})
@@ -771,15 +773,15 @@ func ExampleAsyncConfigManagerWithURL() {
 	fmt.Println("=== Example AsyncConfigManager with URL ===")
 
 	// Create async config manager for URL with refresh every 1 minute
-	urlSource := ConfigSource{
+	urlSource := goresponse.ConfigSource{
 		Method: "url",
 		Path:   "https://api.example.com/config.json",
 	}
 
-	asyncManager := NewAsyncConfigManager(urlSource, 1*time.Minute)
+	asyncManager := goresponse.NewAsyncConfigManager(urlSource, 1*time.Minute)
 
 	// Callback for logging changes
-	asyncManager.AddCallback(func(oldConfig, newConfig *ResponseConfig) {
+	asyncManager.AddCallback(func(oldConfig, newConfig *goresponse.ResponseConfig) {
 		fmt.Printf("Config refreshed from URL at %s\n", time.Now().Format(time.RFC3339))
 		if oldConfig != nil && newConfig != nil {
 			fmt.Printf("Languages changed from %v to %v\n",
@@ -815,20 +817,20 @@ func ExampleAsyncConfigManagerWithURL() {
 func ExampleAsyncConfigManagerAdvanced() {
 	fmt.Println("=== Example AsyncConfigManager Advanced ===")
 
-	fileSource := ConfigSource{
+	fileSource := goresponse.ConfigSource{
 		Method: "file",
 		Path:   "config.json",
 	}
 
 	// Create manager with refresh every 10 seconds for demo
-	asyncManager := NewAsyncConfigManager(fileSource, 10*time.Second)
+	asyncManager := goresponse.NewAsyncConfigManager(fileSource, 10*time.Second)
 
 	// Multiple callbacks
-	asyncManager.AddCallback(func(oldConfig, newConfig *ResponseConfig) {
+	asyncManager.AddCallback(func(oldConfig, newConfig *goresponse.ResponseConfig) {
 		fmt.Printf("Callback 1: Config changed at %s\n", time.Now().Format("15:04:05"))
 	})
 
-	asyncManager.AddCallback(func(oldConfig, newConfig *ResponseConfig) {
+	asyncManager.AddCallback(func(oldConfig, newConfig *goresponse.ResponseConfig) {
 		if oldConfig != nil && newConfig != nil {
 			oldLang := oldConfig.GetDefaultLanguage()
 			newLang := newConfig.GetDefaultLanguage()
@@ -852,7 +854,7 @@ func ExampleAsyncConfigManagerAdvanced() {
 	// Simulate source change
 	time.Sleep(10 * time.Second)
 	fmt.Println("Updating source to different file...")
-	newSource := ConfigSource{
+	newSource := goresponse.ConfigSource{
 		Method: "file",
 		Path:   "config_backup.json",
 	}
@@ -878,7 +880,7 @@ func ExampleAsyncConfigManagerAdvanced() {
 func ExampleConfigComparison() {
 	fmt.Println("=== Comparison Sync vs Async Loading ===")
 
-	fileSource := ConfigSource{
+	fileSource := goresponse.ConfigSource{
 		Method: "file",
 		Path:   "config.json",
 	}
@@ -886,7 +888,7 @@ func ExampleConfigComparison() {
 	// 1. Sync Loading (One-time)
 	fmt.Println("1. Sync Loading (One-time):")
 	start := time.Now()
-	config, err := LoadConfig(fileSource)
+	config, err := goresponse.LoadConfig(fileSource)
 	if err != nil {
 		log.Printf("Error: %v", err)
 		return
@@ -896,11 +898,11 @@ func ExampleConfigComparison() {
 
 	// 2. Async Loading (Auto refresh)
 	fmt.Println("\n2. Async Loading (Auto refresh every 5 seconds):")
-	asyncManager := NewAsyncConfigManager(fileSource, 5*time.Second)
+	asyncManager := goresponse.NewAsyncConfigManager(fileSource, 5*time.Second)
 
 	// Callback for monitoring
 	refreshCount := 0
-	asyncManager.AddCallback(func(oldConfig, newConfig *ResponseConfig) {
+	asyncManager.AddCallback(func(oldConfig, newConfig *goresponse.ResponseConfig) {
 		refreshCount++
 		fmt.Printf("   Auto refresh #%d at %s\n", refreshCount, time.Now().Format("15:04:05"))
 	})
